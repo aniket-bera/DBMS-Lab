@@ -1,0 +1,85 @@
+create table client_master
+(client_no varchar2(6) primary key check(client_no like 'C%'),
+name    varchar2(30),
+address1 varchar2(30),
+address2 varchar2(30),
+city    varchar2(15),
+state    varchar2(15),
+pincode number(6),
+balance_due number(10,2)
+);
+
+create table product_master (
+product_no varchar2(6) primary key check(product_no like 'P%'),
+description varchar2(20) not null,
+profit_percent number(5,2) null,
+unit_measure varchar2(8) not null,
+qty_on_hand number(6) not null,
+reoder_lvl number(6) not null,
+sell_price number(10) not null,
+cost_price number(10) not null,
+constraint sell_cost check(sell_price>0 and cost_price>0)
+);
+
+CREATE TABLE SALESMAN_MASTER(
+SALESMAN_NO VARCHAR2(6) PRIMARY KEY CHECK(SALESMAN_NO LIKE 'S%'),
+SALESMAN_NAME VARCHAR2(20) NOT NULL,
+ADDRESS1 VARCHAR2(30) NOT NULL,
+ADDRESS2 VARCHAR2(30),
+CITY VARCHAR2(20),
+PINCODE NUMBER(8),
+STATE VARCHAR2(20),
+SAL_AMT NUMBER(8,2) NOT NULL CHECK(SAL_AMT>0));
+
+CREATE TABLE SALES_ORDER(
+ORDER_NO VARCHAR2(6) PRIMARY KEY CHECK(ORDER_NO LIKE 'O%'),
+CLIENT_NO VARCHAR2(6) REFERENCES CLIENT_MASTER,
+ORDER_DATE DATE,
+SALESMAN_NO VARCHAR2(6) REFERENCES SALESMAN_MASTER,
+DELIVERY_TYPE CHAR(1) DEFAULT 'F' CHECK(DELIVERY_TYPE IN('P','F') ),
+BILL_Y_N CHAR(1),
+DELIVERY_DATE DATE,
+ORDER_STATUS VARCHAR2(10),
+CONSTRAINT CK_DELIVERY_DATE CHECK(DELIVERY_DATE > ORDER_DATE),
+CONSTRAINT CK_ORDER_STATUS CHECK(ORDER_STATUS IN('In Process','Fulfilled','Backorder','Cancelled')));
+
+CREATE TABLE SALES_ORDER_DETAILS(
+ORDER_NO VARCHAR2(6) REFERENCES SALES_ORDER,
+PRODUCT_NO VARCHAR2(6) REFERENCES PRODUCT_MASTER,
+QTY_ORDERED NUMBER(8),
+QTY_DISP NUMBER(8),
+PRODUCT_RATE NUMBER(10,2));
+
+CREATE TABLE dept (
+  deptno NUMBER(2,0),
+  dname  VARCHAR2(14),
+  loc    VARCHAR2(13),
+  CONSTRAINT pk_dept PRIMARY KEY (deptno)
+);
+
+
+CREATE TABLE emp (
+  empno    NUMBER(4,0),
+  ename    VARCHAR2(10),
+  job      VARCHAR2(9),
+  mgr      NUMBER(4,0),
+  hiredate DATE,
+  sal      NUMBER(7,2),
+  comm     NUMBER(7,2),
+  deptno   NUMBER(2,0),
+  CONSTRAINT pk_emp PRIMARY KEY (empno),
+  CONSTRAINT fk_deptno FOREIGN KEY (deptno) REFERENCES dept (deptno)
+);
+
+CREATE TABLE salgrade (
+  grade NUMBER,
+  losal NUMBER,
+  hisal NUMBER
+);
+
+create table bonus( ename varchar2(10),
+ job varchar2(9), 
+ sal number, 
+ comm number);
+
+
